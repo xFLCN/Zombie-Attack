@@ -1,0 +1,1292 @@
+--Things To Do:
+
+--Replace "(Place Holder)"s, With Proper Names.
+--Change "A_1, A_2, A_3", To Something More Efficient.
+--Finish "Teleport" Window.
+--Add "Auto-Equip", For Guns And Knives.    [BETA]
+--Do Some Ui Improvements, E.G. "Auto-Specific-Enemies (Knife)", Shorten Them Down. To Make Them More Readable.
+local Workspace = game:GetService("Workspace")
+local Run = game:GetService("RunService")
+local Gui = game:GetService("GuiService")
+local Stats = game:GetService("Stats")
+local Sound = game:GetService("SoundService")
+local NonReplicatedCSGDictionary = game:GetService("NonReplicatedCSGDictionaryService")
+local CSGDictionary = game:GetService("CSGDictionaryService")
+local Log = game:GetService("LogService")
+local ContentProvider = game:GetService("ContentProvider")
+local KeyframeSequenceProvider = game:GetService("KeyframeSequenceProvider")
+local Chat = game:GetService("Chat")
+local Marketplace = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local LocalPlayerMouse = LocalPlayer:GetMouse()
+local Points = game:GetService("PointsService")
+local Ad = game:GetService("AdService")
+local Notification = game:GetService("NotificationService")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local HttpRbxApi = game:GetService("HttpRbxApiService")
+local Tween = game:GetService("TweenService")
+local Text = game:GetService("TextService")
+local StudioData = game:GetService("StudioData")
+local StarterPlayer = game:GetService("StarterPlayer")
+local StarterPack = game:GetService("StarterPack")
+local StarterGui = game:GetService("StarterGui")
+local CoreGui = game:GetService("CoreGui")
+local Localization = game:GetService("LocalizationService")
+local Teleport = game:GetService("TeleportService")
+local Joints = game:GetService("JointsService")
+local Collection = game:GetService("CollectionService")
+local Physics = game:GetService("PhysicsService")
+local Badge = game:GetService("BadgeService")
+local Geometry = game:GetService("Geometry")
+local Friend = game:GetService("FriendService")
+local Insert = game:GetService("InsertService")
+local GamePass = game:GetService("GamePassService")
+local Debris = game:GetService("Debris")
+local Timer = game:GetService("TimerService")
+local Cookies = game:GetService("CookiesService")
+local UserInput = game:GetService("UserInputService")
+local Keyboard = game:GetService("KeyboardService")
+local Mouse = game:GetService("MouseService")
+local VR = game:GetService("VRService")
+local ContextAction = game:GetService("ContextActionService")
+local Script = game:GetService("ScriptService")
+local Asset = game:GetService("AssetService")
+local TouchInput = game:GetService("TouchInputService")
+local Browser = game:GetService("BrowserService")
+local ScriptContext = game:GetService("ScriptContext")
+local Selection = game:GetService("Selection")
+local MeshContentProvider = game:GetService("MeshContentProvider")
+local Lighting = game:GetService("Lighting")
+local SolidModelContentProvider = game:GetService("SolidModelContentProvider")
+local Gamepad = game:GetService("GamepadService")
+local Controller = game:GetService("ControllerService")
+local CorePackages = game:GetService("CorePackages")
+local RuntimeScript = game:GetService("RuntimeScriptService")
+local ABTest = game:GetService("ABTestService")
+local Haptic = game:GetService("HapticService")
+local NetworkClient = game:GetService("NetworkClient")
+local Http = game:GetService("HttpService")
+local ChangeHistory = game:GetService("ChangeHistoryService")
+local Visit = game:GetService("Visit")
+local GuidRegistry = game:GetService("GuidRegistryService")
+local Teams = game:GetService("Teams")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RobloxReplicatedStorage = game:GetService("RobloxReplicatedStorage")
+local Test = game:GetService("TestService")
+local Social = game:GetService("SocialService")
+local Policy = game:GetService("PolicyService")
+local RbxAnalytics = game:GetService("RbxAnalyticsService")
+local Group = game:GetService("GroupService")
+local Spawner = game:GetService("SpawnerService")
+local Pathfinding = game:GetService("PathfindingService")
+local ui = loadstring(game:GetObjects("rbxassetid://4133667265")[1].Source)("Library by wally")
+local w = ui:CreateWindow('Zombie Attack')
+w:Section('-=General Farming=-')
+local b = w:Button("General Autofarm", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/iPJkreHg", true))()
+    print("General Autofarm")
+end)
+local t = w:Toggle('Steal Players Kills', {
+    flag = "spk",
+    location = Variables
+}, function()
+    if spk then
+        while wait(0.1) and spk do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        if GetChildren.Name == "Head" then
+                            GunTable = {
+                                ["Normal"] = Vector3.new(0, 0, 0),
+                                ["Direction"] = GetChildren.Position,
+                                ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                ["Origin"] = GetChildren.Position,
+                                ["Hit"] = GetChildren,
+                                ["Pos"] = GetChildren.Position
+                            }
+                            RemoteEvent = ReplicatedStorage.Gun
+                            RemoteEvent:FireServer(GunTable)
+                            print("Steal Players Kills =", spk)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Steal Players Kills =", spk)
+    end
+end)
+w:Section('-=Auto Equip=-')
+local AutoEquipKnifeTable = {
+    "Auto Equip"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Knives:GetChildren()) do
+    table.insert(AutoEquipKnifeTable, GetChildren.Name)
+end
+w:Dropdown("Select Knife", {
+    location = _G,
+    flag = "sk",
+    list = AutoEquipKnifeTable
+}, function(new)
+    warn(new)
+    print(_G.sk)
+    while wait(0.1) do
+        FindFirstChild = LocalPlayer.Backpack:FindFirstChild(_G.sk)
+        for _, GetChildren in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if GetChildren.Name == "Humanoid" then
+                GetChildren:EquipTool(FindFirstChild)
+            end
+        end
+    end
+end)
+local AutoEquipGunsTable = {
+    "Select Gun"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+    table.insert(AutoEquipGunsTable, GetChildren.Name)
+end
+w:Dropdown("Auto Equip Gun", {
+    location = _G,
+    flag = "aeg",
+    list = AutoEquipGunsTable
+}, function(new)
+    warn(new)
+    print(_G.aeg)
+    while wait(0.1) do
+        FindFirstChild = LocalPlayer.Backpack:FindFirstChild(_G.aeg)
+        for _, GetChildren in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if GetChildren.Name == "Humanoid" then
+                GetChildren:EquipTool(FindFirstChild)
+            end
+        end
+    end
+end)
+w:Section('-=Enemies Farming=-')
+local Variables = getfenv()
+local t2 = w:Toggle('Auto-Enemies (Knife)', {
+    flag = "aek",
+    location = Variables
+}, function()
+    if aek then
+        while wait(0.1) and aek do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        GetChildren.Anchored = true
+                        GetChildren.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
+                        A_1 = "throw"
+                        A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                        A_3 = GetChildren.CFrame
+                        RemoteFunction = ReplicatedStorage.forhackers
+                        RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                        print("Auto-Enemies (Knife) =", aek)
+                    end
+                end
+            end
+        end
+    else
+        for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+            for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                if GetChildren.ClassName == "Part" then
+                    GetChildren.Anchored = false
+                    print("Auto-Enemies (Knife) =", aek)
+                end
+            end
+        end
+    end
+end)
+local AutoSpecificEnemiesKnifeTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Enemies:GetChildren()) do
+    table.insert(AutoSpecificEnemiesKnifeTable, GetChildren.Name)
+end
+w:Dropdown("Specific Enemy (Knife)", {
+    location = _G,
+    flag = "sek",
+    list = AutoSpecificEnemiesKnifeTable
+}, function(new)
+    warn(new)
+    print(_G.sek)
+    _G.sek = new
+end)
+local t3 = w:Toggle('Auto-Specific-Enemies (Knife)', {
+    flag = "asek",
+    location = Variables
+}, function()
+    if asek then
+        while wait(0.1) and asek do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                if GetChildren.Name == _G.sek then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.ClassName == "Part" then
+                            GetChildren.Anchored = true
+                            GetChildren.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
+                            A_1 = "throw"
+                            A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                            A_3 = GetChildren.CFrame
+                            RemoteFunction = ReplicatedStorage.forhackers
+                            RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                            print("Auto-Specific-Enemies (Knife) =", asek)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+            if GetChildren.Name == _G.sek then
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        GetChildren.Anchored = false
+                        print("Auto-Specific-Enemies (Knife) =", asek)
+                    end
+                end
+            end
+        end
+    end
+end)
+local t4 = w:Toggle('Auto-Enemies (Gun)', {
+    flag = "aeg",
+    location = Variables
+}, function()
+    if aeg then
+        while wait(0.1) and aeg do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        if GetChildren.Name == "Head" then
+                            GunTable = {
+                                ["Normal"] = Vector3.new(0, 0, 0),
+                                ["Direction"] = GetChildren.CFrame,
+                                ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                ["Origin"] = GetChildren.CFrame,
+                                ["Hit"] = GetChildren,
+                                ["Pos"] = GetChildren.CFrame
+                            }
+                            RemoteEvent = ReplicatedStorage.Gun
+                            RemoteEvent:FireServer(GunTable)
+                            print("Auto-Enemies (Gun) =", aeg)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Auto-Enemies (Gun) =", aeg)
+    end
+end)
+local AutoSpecificEnemiesGunTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Enemies:GetChildren()) do
+    table.insert(AutoSpecificEnemiesGunTable, GetChildren.Name)
+end
+w:Dropdown("Specific Enemy (Gun)", {
+    location = _G,
+    flag = "seg",
+    list = AutoSpecificEnemiesGunTable
+}, function(new)
+    warn(new)
+    print(_G.seg)
+    _G.seg = new
+end)
+local t5 = w:Toggle('Auto-Specific-Enemy (Gun)', {
+    flag = "aseg",
+    location = Variables
+}, function()
+    if aseg then
+        while wait(0.1) and aseg do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                if GetChildren.Name == _G.seg then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.ClassName == "Part" then
+                            if GetChildren.Name == "Head" then
+                                GunTable = {
+                                    ["Normal"] = Vector3.new(0, 0, 0),
+                                    ["Direction"] = GetChildren.CFrame,
+                                    ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                    ["Origin"] = GetChildren.CFrame,
+                                    ["Hit"] = GetChildren,
+                                    ["Pos"] = GetChildren.CFrame
+                                }
+                                RemoteEvent = ReplicatedStorage.Gun
+                                RemoteEvent:FireServer(GunTable)
+                                print("Auto-Specific-Enemy (Gun) =", aseg)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Auto-Specific-Enemy (Gun) =", aseg)
+    end
+end)
+w:Section('-=Bosses Farming=-')
+local t6 = w:Toggle('Auto-Bosses (Knife)', {
+    flag = "abk",
+    location = Variables
+}, function()
+    if abk then
+        while wait(1) and abk do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        GetChildren.Anchored = true
+                        GetChildren.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
+                        A_1 = "throw"
+                        A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                        A_3 = GetChildren.CFrame
+                        RemoteFunction = ReplicatedStorage.forhackers
+                        RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                        print("Auto-Bosses (Knife) =", abk)
+                    end
+                end
+            end
+        end
+    else
+        for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+            for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                if GetChildren.ClassName == "Part" then
+                    GetChildren.Anchored = false
+                    print("Auto-Bosses (Knife) =", abk)
+                end
+            end
+        end
+    end
+end)
+local AutoSpecificBossesKnifeTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Bosses:GetChildren()) do
+    table.insert(AutoSpecificBossesKnifeTable, GetChildren.Name)
+end
+w:Dropdown("Specific Boss (Knife)", {
+    location = _G,
+    flag = "sbk",
+    list = AutoSpecificBossesKnifeTable
+}, function(new)
+    warn(new)
+    print(_G.sbk)
+    _G.sbk = new
+end)
+local t7 = w:Toggle('Auto-Specific-Bosses (Knife)', {
+    flag = "asbk",
+    location = Variables
+}, function()
+    if asbk then
+        while wait(1) and asbk do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                if GetChildren.Name == _G.sek then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.ClassName == "Part" then
+                            GetChildren.Anchored = true
+                            GetChildren.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
+                            A_1 = "throw"
+                            A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                            A_3 = GetChildren.CFrame
+                            RemoteFunction = ReplicatedStorage.forhackers
+                            RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                            print("Auto-Specific-Bosses (Knife) =", asbk)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+            if GetChildren.Name == _G.sek then
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        GetChildren.Anchored = false
+                        print("Auto-Specific-Bosses (Knife) =", asbk)
+                    end
+                end
+            end
+        end
+    end
+end)
+local t8 = w:Toggle('Auto-Bosses (Gun)', {
+    flag = "abg",
+    location = Variables
+}, function()
+    if abg then
+        while wait(1) and abg do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        if GetChildren.Name == "Head" then
+                            GunTable = {
+                                ["Normal"] = Vector3.new(0, 0, 0),
+                                ["Direction"] = GetChildren.CFrame,
+                                ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                ["Origin"] = GetChildren.CFrame,
+                                ["Hit"] = GetChildren,
+                                ["Pos"] = GetChildren.CFrame
+                            }
+                            RemoteEvent = ReplicatedStorage.Gun
+                            RemoteEvent:FireServer(GunTable)
+                            print("Auto-Bosses (Gun) =", abg)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Auto-Bosses (Gun) =", abg)
+    end
+end)
+local AutoSpecificBossesGunTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Bosses:GetChildren()) do
+    table.insert(AutoSpecificBossesGunTable, GetChildren.Name)
+end
+w:Dropdown("Specific Boss (Gun)", {
+    location = _G,
+    flag = "sbg",
+    list = AutoSpecificBossesGunTable
+}, function(new)
+    warn(new)
+    print(_G.sbg)
+    _G.sbg = new
+end)
+local t9 = w:Toggle('Auto-Specific-Bosses (Gun)', {
+    flag = "asbg",
+    location = Variables
+}, function()
+    if asbg then
+        while wait(1) and asbg do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                if GetChildren.Name == _G.sbg then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.ClassName == "Part" then
+                            if GetChildren.Name == "Head" then
+                                GunTable = {
+                                    ["Normal"] = Vector3.new(0, 0, 0),
+                                    ["Direction"] = GetChildren.CFrame,
+                                    ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                    ["Origin"] = GetChildren.CFrame,
+                                    ["Hit"] = GetChildren,
+                                    ["Pos"] = GetChildren.CFrame
+                                }
+                                RemoteEvent = ReplicatedStorage.Gun
+                                RemoteEvent:FireServer(GunTable)
+                                print("Auto-Specific-Bosses (Gun) =", asbg)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Auto-Specific-Bosses (Gun) =", asbg)
+    end
+end)
+w:Section('-=(Place Holder)=-')
+local t10 = w:Toggle('Auto-Collect Powerups [R]', {
+    flag = "acpr",
+    location = Variables
+}, function()
+    if acpr then
+        while wait(1) and acpr do
+            for _, GetChildren in pairs(Workspace.Powerups:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        firetouchinterest(LocalPlayer.Character.HumanoidRootPart, GetChildren, 0)
+                        print("Auto-Collect Powerups [R] =", acpr)
+                    end
+                end
+            end
+        end
+    else
+        print("Auto-Collect Powerups [R] =", acpr)
+    end
+end)
+local t11 = w:Toggle('Auto-Collect Powerups', {
+    flag = "acp",
+    location = Variables
+}, function()
+    if acp then
+        while wait(1) and acp do
+            for _, GetChildren in pairs(Workspace.Powerups:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.ClassName == "Part" then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = GetChildren.CFrame
+                        print("Auto-Collect Powerups =", acp)
+                    end
+                end
+            end
+        end
+    else
+        print("Auto-Collect Powerups =", acp)
+    end
+end)
+local AutoUnboxBoxTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(LocalPlayer.PlayerGui.MainInterface.MenuHolder.MainCrates.panels.Crates.ItemHolder:GetChildren()) do
+    table.insert(AutoUnboxBoxTable, GetChildren.Name)
+end
+w:Dropdown("Auto-UnboxBox", {
+    location = _G,
+    flag = "aub",
+    list = AutoUnboxBoxTable
+}, function(new)
+    warn(new)
+    print(_G.aub)
+    _G.aub = new
+end)
+local t12 = w:Toggle('Auto-Unbox Crates', {
+    flag = "auc",
+    location = Variables
+}, function()
+    if auc then
+        while wait(1) and auc do
+            A_1 = "unbox_box"
+            A_2 = _G.aub
+            RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+            RemoteFunction:InvokeServer(A_1, A_2)
+            print("Auto-Unbox Crates =", auc)
+        end
+    else
+        print("Auto-Unbox Crates =", auc)
+    end
+end)
+local w = ui:CreateWindow('Character Cheats')
+w:Section('-=Kill Aura Enemies=-')
+local t13 = w:Toggle('Kill Aura (Knife)', {
+    flag = "kak",
+    location = Variables
+}, function()
+    if kak then
+        while wait(0.1) and kak do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.Name == "Head" then
+                        A_1 = "hit"
+                        A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                        A_3 = GetChildren
+                        RemoteFunction = ReplicatedStorage.forhackers
+                        RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                        print("Kill Aura (Knife) =", kak)
+                    end
+                end
+            end
+        end
+    else
+        print("Kill Aura (Knife) =", kak)
+    end
+end)
+local SpecificKillAuraKnifeTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Enemies:GetChildren()) do
+    table.insert(SpecificKillAuraKnifeTable, GetChildren.Name)
+end
+w:Dropdown("Specific Aura (Knife)", {
+    location = _G,
+    flag = "sak",
+    list = SpecificKillAuraKnifeTable
+}, function(new)
+    warn(new)
+    print(_G.sak)
+    _G.sak = new
+end)
+local t14 = w:Toggle('Specific Kill Aura (Knife)', {
+    flag = "skak",
+    location = Variables
+}, function()
+    if skak then
+        while wait(0.1) and skak do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                if GetChildren.Name == _G.sak then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.Name == "Head" then
+                            A_1 = "hit"
+                            A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                            A_3 = GetChildren
+                            RemoteFunction = ReplicatedStorage.forhackers
+                            RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                            print("Specific Kill Aura (Knife) =", skak)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Specific Kill Aura (Knife) =", skak)
+    end
+end)
+local t15 = w:Toggle('Kill Aura (Gun)', {
+    flag = "kag",
+    location = Variables
+}, function()
+    if kag then
+        while wait(0.1) and kag do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.Name == "Head" then
+                        GunTable = {
+                            ["Normal"] = Vector3.new(0, 0, 0),
+                            ["Direction"] = GetChildren.CFrame,
+                            ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                            ["Origin"] = GetChildren.CFrame,
+                            ["Hit"] = GetChildren,
+                            ["Pos"] = GetChildren.CFrame
+                        }
+                        RemoteEvent = ReplicatedStorage.Gun
+                        RemoteEvent:FireServer(GunTable)
+                        print("Kill Aura (Gun) =", kag)
+                    end
+                end
+            end
+        end
+    else
+        print("Kill Aura (Gun) =", kag)
+    end
+end)
+local SpecificKillAuraGunTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Enemies:GetChildren()) do
+    table.insert(SpecificKillAuraGunTable, GetChildren.Name)
+end
+w:Dropdown("Specific Aura (Gun)", {
+    location = _G,
+    flag = "sag",
+    list = SpecificKillAuraGunTable
+}, function(new)
+    warn(new)
+    print(_G.sag)
+    _G.sag = new
+end)
+local t16 = w:Toggle('Specific Kill Aura (Gun)', {
+    flag = "skag",
+    location = Variables
+}, function()
+    if skag then
+        while wait(0.1) and skag do
+            for _, GetChildren in pairs(Workspace.enemies:GetChildren()) do
+                if GetChildren.Name == _G.skag then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.Name == "Head" then
+                            GunTable = {
+                                ["Normal"] = Vector3.new(0, 0, 0),
+                                ["Direction"] = GetChildren.CFrame,
+                                ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                ["Origin"] = GetChildren.CFrame,
+                                ["Hit"] = GetChildren,
+                                ["Pos"] = GetChildren.CFrame
+                            }
+                            RemoteEvent = ReplicatedStorage.Gun
+                            RemoteEvent:FireServer(GunTable)
+                            print("Specific Kill Aura (Gun) =", skag)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Specific Kill Aura (Gun) =", skag)
+    end
+end)
+w:Section('-=Kill Aura Bosses=-')
+local t17 = w:Toggle('Kill Aura Bosses (Knife)', {
+    flag = "kabk",
+    location = Variables
+}, function()
+    if kabk then
+        while wait(1) and kabk do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.Name == "Head" then
+                        A_1 = "hit"
+                        A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                        A_3 = GetChildren
+                        RemoteFunction = ReplicatedStorage.forhackers
+                        RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                        print("Kill Aura Bosses (Knife) =", kabk)
+                    end
+                end
+            end
+        end
+    else
+        print("Kill Aura Bosses (Knife) =", kabk)
+    end
+end)
+local SpecificKillAuraBossesKnifeTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Bosses:GetChildren()) do
+    table.insert(SpecificKillAuraBossesKnifeTable, GetChildren.Name)
+end
+w:Dropdown("Specific Aura Bosses (Knife)", {
+    location = _G,
+    flag = "sabk",
+    list = SpecificKillAuraBossesKnifeTable
+}, function(new)
+    warn(new)
+    print(_G.sabk)
+    _G.sabk = new
+end)
+local t18 = w:Toggle('Specific [KA] Bosses (Knife)', {
+    flag = "skabk",
+    location = Variables
+}, function()
+    if skabk then
+        while wait(1) and skabk do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                if GetChildren.Name == _G.sabk then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.Name == "Head" then
+                            GetChildren.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
+                            A_1 = "throw"
+                            A_2 = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name
+                            A_3 = GetChildren.CFrame
+                            RemoteFunction = ReplicatedStorage.forhackers
+                            RemoteFunction:InvokeServer(A_1, A_2, A_3)
+                            print("Specific [KA] Bosses (Knife) =", skabk)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Specific [KA] Bosses (Knife) =", skabk)
+    end
+end)
+local t19 = w:Toggle('Kill Aura Bosses (Gun)', {
+    flag = "kabg",
+    location = Variables
+}, function()
+    if kabg then
+        while wait(1) and kabg do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                    if GetChildren.Name == "Head" then
+                        GunTable = {
+                            ["Normal"] = Vector3.new(0, 0, 0),
+                            ["Direction"] = GetChildren.CFrame,
+                            ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                            ["Origin"] = GetChildren.CFrame,
+                            ["Hit"] = GetChildren,
+                            ["Pos"] = GetChildren.CFrame
+                        }
+                        RemoteEvent = ReplicatedStorage.Gun
+                        RemoteEvent:FireServer(GunTable)
+                        print("Kill Aura Bosses (Gun) =", kabg)
+                    end
+                end
+            end
+        end
+    else
+        print("Kill Aura Bosses (Gun) =", kabg)
+    end
+end)
+local SpecificKillAuraBossesGunTable = {
+    "(Place Holder)"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Bosses:GetChildren()) do
+    table.insert(SpecificKillAuraBossesGunTable, GetChildren.Name)
+end
+w:Dropdown("Specific Aura Bosses (Gun)", {
+    location = _G,
+    flag = "sabg",
+    list = SpecificKillAuraBossesGunTable
+}, function(new)
+    warn(new)
+    print(_G.sabg)
+    _G.sabg = new
+end)
+local t20 = w:Toggle('Specific [KA] Bosses (Gun)', {
+    flag = "skabg",
+    location = Variables
+}, function()
+    if skabg then
+        while wait(1) and skabg do
+            for _, GetChildren in pairs(Workspace.BossFolder:GetChildren()) do
+                if GetChildren.Name == _G.sabg then
+                    for _, GetChildren in pairs(GetChildren:GetChildren()) do
+                        if GetChildren.Name == "Head" then
+                            GunTable = {
+                                ["Normal"] = Vector3.new(0, 0, 0),
+                                ["Direction"] = GetChildren.CFrame,
+                                ["Name"] = Workspace[LocalPlayer.Name]:FindFirstChildOfClass("Tool").Name,
+                                ["Origin"] = GetChildren.CFrame,
+                                ["Hit"] = GetChildren,
+                                ["Pos"] = GetChildren.CFrame
+                            }
+                            RemoteEvent = ReplicatedStorage.Gun
+                            RemoteEvent:FireServer(GunTable)
+                            print("Specific [KA] Bosses (Gun) =", skabk)
+                        end
+                    end
+                end
+            end
+        end
+    else
+        print("Specific [KA] Bosses (Gun) =", skabg)
+    end
+end)
+w:Section('-=LocalPlayer Cheats=-')
+local t21 = w:Toggle('Infinite Jump', {
+    flag = "ij",
+    location = Variables
+}, function()
+    if ij then
+        while wait(0.1) and ij do
+            if UserInput:IsKeyDown(Enum.KeyCode.Space) == true then
+                LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState(3)
+                print("Infinite Jump =", ij)
+            end
+        end
+    else
+        print("Infinite Jump =", ij)
+    end
+end)
+local b2 = w:Button("Noclip [N]", function()
+    Noclip = false
+    Run.Stepped:connect(function()
+        if Noclip then
+            LocalPlayer.Character.Humanoid:ChangeState(11)
+        end
+    end)
+    LocalPlayerMouse.KeyDown:connect(function(KeyPressed)
+        if KeyPressed == "n" then
+            Noclip = not Noclip
+            LocalPlayer.Character.Humanoid:ChangeState(11)
+            print("Noclip [N] Loaded, Press 'n' To Noclip")
+        end
+    end)
+end)
+local box = w:Box('WalkSpeed', {
+    flag = "ws",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(new)
+    print("WalkSpeed =", tonumber(new))
+end)
+local b3 = w:Button('Reset WalkSpeed', function()
+    LocalPlayer.Character.Humanoid.WalkSpeed = 16
+    print("Reset WalkSpeed =", 16)
+end)
+local box2 = w:Box('JumpPower', {
+    flag = "jp",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    LocalPlayer.Character.Humanoid.JumpPower = tonumber(new)
+    print("JumpPower =", tonumber(new))
+end)
+local b4 = w:Button('Reset JumpPower', function()
+    LocalPlayer.Character.Humanoid.JumpPower = 50
+    print("Reset JumpPower =", 50)
+end)
+local box3 = w:Box('HipHeight', {
+    flag = "hh",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    LocalPlayer.Character.Humanoid.HipHeight = tonumber(new)
+    print("HipHeight =", tonumber(new))
+end)
+local b5 = w:Button('Reset HipHeight', function()
+    LocalPlayer.Character.Humanoid.HipHeight = 0
+    print("Reset HipHeight =", 0)
+end)
+local s = w:Slider("Gravity", {
+    min = 0,
+    max = 196.2,
+    flag = 'g'
+}, function(v)
+    Workspace.Gravity = v
+end)
+local b6 = w:Button('Reset Gravity', function()
+    Workspace.Gravity = 196.2
+    print("Reset Gravity =", 196.2)
+end)
+local s2 = w:Slider("FOV", {
+    min = 1,
+    max = 120,
+    flag = 'fov'
+}, function(v)
+    Workspace.CurrentCamera.FieldOfView = v
+end)
+local b7 = w:Button('Reset FOV', function()
+    Workspace.CurrentCamera.FieldOfView = 70
+    print("Reset FOV =", 70)
+end)
+w:Bind("Kill Player", {
+    flag = "killbind",
+    kbonly = true,
+    default = Enum.KeyCode.RightAlt
+}, function()
+    LocalPlayer.Character:BreakJoints()
+end)
+local w = ui:CreateWindow('Teleports')
+local w = ui:CreateWindow('Shop')
+w:Section('-=Buy Items=-')
+local BuyGunsTable = {
+    "Choose Gun"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+    table.insert(BuyGunsTable, GetChildren.Name)
+end
+w:Dropdown("Select Gun", {
+    location = _G,
+    flag = "sg",
+    list = BuyGunsTable
+}, function(new)
+    warn(new)
+    print(_G.sg)
+    _G.sg = new
+end)
+local b8 = w:Button('Purchase Gun', function()
+    A_1 = "BuyItem_Cash"
+    A_2 = _G.sg
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2)
+    print("Purchase Gun =", A_2)
+end)
+w:Section('-=Zombies=-')
+local BuyZombiesTable = {
+    "Choose Zombie"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Enemies:GetChildren()) do
+    table.insert(BuyZombiesTable, GetChildren.Name)
+end
+w:Dropdown("Select Zombie", {
+    location = _G,
+    flag = "sz",
+    list = BuyZombiesTable
+}, function(new)
+    warn(new)
+    print(_G.sz)
+    _G.sz = new
+end)
+local b9 = w:Button('Purchase Zombie', function()
+    A_1 = "BuyZombie"
+    A_2 = _G.sz
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2)
+    print("Purchase Zombie =", A_2)
+end)
+w:Section('-=Pets=-')
+local BuyPetsTable = {
+    "Choose Pet"
+}
+for _, GetChildren in pairs(ReplicatedStorage.pets.holder:GetChildren()) do
+    table.insert(BuyPetsTable, GetChildren.Name)
+end
+w:Dropdown("Select Pet", {
+    location = _G,
+    flag = "sp",
+    list = BuyPetsTable
+}, function(new)
+    warn(new)
+    print(_G.sp)
+    _G.sp = new
+end)
+local b10 = w:Button('Purchase Pet', function()
+    A_1 = "BuyItem_Cash"
+    A_2 = _G.sp
+    A_3 = "Pet"
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2, A_3)
+    print("Purchase Pet =", A_2)
+end)
+w:Section('-=Equip Items=-')
+local EquipGunsTable = {
+    "Choose Gun"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+    table.insert(EquipGunsTable, GetChildren.Name)
+end
+w:Dropdown("Select Gun To Equip", {
+    location = _G,
+    flag = "sgte",
+    list = EquipGunsTable
+}, function(new)
+    warn(new)
+    print(_G.sgte)
+    _G.sgte = new
+end)
+local b11 = w:Button('Equip Gun', function()
+    A_1 = "EquipItem"
+    A_2 = _G.sgte
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2)
+    print("Equip Gun =", A_2)
+end)
+w:Section('-=Knives=-')
+local EquipKnivesTable = {
+    "Choose Knife"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Knives:GetChildren()) do
+    table.insert(EquipKnivesTable, GetChildren.Name)
+end
+w:Dropdown("Select Knife To Equip", {
+    location = _G,
+    flag = "skte",
+    list = EquipKnivesTable
+}, function(new)
+    warn(new)
+    print(_G.skte)
+    _G.skte = new
+end)
+local b12 = w:Button('Equip Knife', function()
+    A_1 = "EquipItem"
+    A_2 = _G.skte
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2)
+    print("Equip Knife =", A_2)
+end)
+w:Section('-=Zombies=-')
+local EquipZombiesTable = {
+    "Choose Zombie"
+}
+for _, GetChildren in pairs(ReplicatedStorage.Enemies:GetChildren()) do
+    table.insert(EquipZombiesTable, GetChildren.Name)
+end
+w:Dropdown("Select Zombie To Equip", {
+    location = _G,
+    flag = "szte",
+    list = EquipZombiesTable
+}, function(new)
+    warn(new)
+    print(_G.szte)
+    _G.szte = new
+end)
+local b13 = w:Button('Equip Zombie', function()
+    A_1 = "EquipItem"
+    A_2 = _G.szte
+    A_3 = "Zombie"
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2, A_3)
+    print("Equip Zombie =", A_2)
+end)
+w:Section('-=Pets=-')
+local EquipPetTable = {
+    "Choose Pet"
+}
+for _, GetChildren in pairs(ReplicatedStorage.pets.holder:GetChildren()) do
+    table.insert(EquipPetTable, GetChildren.Name)
+end
+w:Dropdown("Select Pet To Equip", {
+    location = _G,
+    flag = "spte",
+    list = EquipPetTable
+}, function(new)
+    warn(new)
+    print(_G.spte)
+    _G.spte = new
+end)
+local b14 = w:Button('Equip Pet', function()
+    A_1 = "EquipItem"
+    A_2 = _G.spte
+    A_3 = "Pet"
+    RemoteFunction = ReplicatedStorage.RemoteEventContainer.CommunicationF
+    RemoteFunction:InvokeServer(A_1, A_2, A_3)
+    print("Equip Pet =", A_2)
+end)
+local w = ui:CreateWindow('Miscellaneous')
+w:Section('-=Gun Mods=-')
+local box4 = w:Box('Damage', {
+    flag = "d",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Damage = tonumber(new)
+        print("Damage =", tonumber(new))
+    end
+end)
+local box5 = w:Box('Length', {
+    flag = "l",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Length = tonumber(new)
+        print("Length =", tonumber(new))
+    end
+end)
+local box5 = w:Box('Firerate', {
+    flag = "f",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Firerate = tonumber(new)
+        print("Firerate =", tonumber(new))
+    end
+end)
+local box5 = w:Box('HeadshotMultiplier', {
+    flag = "hm",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].HeadshotMultiplier = tonumber(new)
+        print("HeadshotMultiplier =", tonumber(new))
+    end
+end)
+local t22 = w:Toggle('Automatic', {
+    flag = "a",
+    location = Variables
+}, function()
+    if a then
+        for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+            require(ReplicatedStorage.GunData)[GetChildren.Name].Automatic = a
+            print("Automatic =", a)
+        end
+    else
+        for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+            require(ReplicatedStorage.GunData)[GetChildren.Name].Automatic = a
+            print("Automatic =", a)
+        end
+    end
+end)
+local box6 = w:Box('BulletsPerShot', {
+    flag = "bps",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].BulletsPerShot = tonumber(new)
+        print("BulletsPerShot =", tonumber(new))
+    end
+end)
+w:Dropdown("Gun Type", {
+    location = _G,
+    flag = "gt",
+    list = {
+        'AssaultRifle',
+        'Handgun'
+    }
+}, function(new)
+    warn(new)
+    print(_G.gt)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Type = _G.gt
+    end
+end)
+local box7 = w:Box('Min', {
+    flag = "min",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Spread.Min = tonumber(new)
+        print("Min =", tonumber(new))
+    end
+end)
+local box8 = w:Box('Max', {
+    flag = "max",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Spread.Max = tonumber(new)
+        print("Max =", tonumber(new))
+    end
+end)
+local box9 = w:Box('Inc', {
+    flag = "inc",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Spread.Inc = tonumber(new)
+        print("Inc =", tonumber(new))
+    end
+end)
+local box10 = w:Box('Rec', {
+    flag = "rec",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].Spread.Rec = tonumber(new)
+        print("Rec =", tonumber(new))
+    end
+end)
+w:Dropdown("BulletColor", {
+    location = _G,
+    flag = "bc",
+    list = {
+        "(Place Holder)"
+    }
+}, function(new)
+    warn(new)
+    print(_G.bc)
+    for _, GetChildren in pairs(ReplicatedStorage.Guns:GetChildren()) do
+        require(ReplicatedStorage.GunData)[GetChildren.Name].BulletColor = _G.bc
+    end
+end)
+w:Section('-=Knife Mods=-')
+local box11 = w:Box('Damage', {
+    flag = "d",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Knives:GetChildren()) do
+        require(ReplicatedStorage.KnifeData)[GetChildren.Name].Damage = tonumber(new)
+        print("Damage =", tonumber(new))
+    end
+end)
+local box12 = w:Box('Speed', {
+    flag = "s",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Knives:GetChildren()) do
+        require(ReplicatedStorage.KnifeData)[GetChildren.Name].Speed = tonumber(new)
+        print("Speed =", tonumber(new))
+    end
+end)
+local box13 = w:Box('Throw Damage', {
+    flag = "td",
+    type = 'number'
+}, function(box, new, old, enter)
+    print(new, old, enter)
+    for _, GetChildren in pairs(ReplicatedStorage.Knives:GetChildren()) do
+        require(ReplicatedStorage.KnifeData)[GetChildren.Name].ThrowDamage = tonumber(new)
+        print("Throw Damage =", tonumber(new))
+    end
+end)
+local b15 = w:Button("Reset KnifeData", function()
+    for _, GetChildren in pairs(ReplicatedStorage.Knives:GetChildren()) do
+        require(ReplicatedStorage.KnifeData)[GetChildren.Name].Damage = 0
+        require(ReplicatedStorage.KnifeData)[GetChildren.Name].Speed = 0
+        require(ReplicatedStorage.KnifeData)[GetChildren.Name].ThrowDamage = 0
+        print("Reset KnifeData")
+    end
+end)
+w:Section('-=(Place Holder)=-')
+local t23 = w:Toggle('Anti-AFK', {
+    flag = "aa",
+    location = Variables
+}, function()
+    if aa then
+        VirtualUser = game:GetService("VirtualUser")
+        LocalPlayer.Idled:connect(function()
+            VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            wait(1)
+            VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            print("Anti-AFK =", aa)
+        end)
+    else
+        print("Anti-AFK =", aa)
+    end
+end)
+local b16 = w:Button('Become Zombie', function()
+    A_1 = "request_become_zombie"
+    RemoteEvent = game:GetService("ReplicatedStorage").RemoteEventContainer.CommunicationE
+    RemoteEvent:FireServer(A_1)
+    print("Become Zombie")
+end)
